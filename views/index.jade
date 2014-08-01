@@ -1,0 +1,54 @@
+doctype
+html
+	head
+		meta(charset="utf-8")
+		title SteamWall
+		meta(name="description" content="SteamWall")
+		meta(name="viewport" content="width=device-width")
+		if !isProduction
+			link(rel="stylesheet" href="css/styles.css")
+		else
+			link(rel="stylesheet" href="css/styles.min.css")
+	body
+		if !userId
+			.panel
+				.signin
+					p SteamWall uses games from your Steam library to generate a unique wallpaper
+					a.btn(href="/auth") #[i.icon-steam] Sign in through Steam
+		else
+			canvas#canvas
+			.panel
+				form#form(action="/download" method="post")
+					.step.step1
+						.row
+							.resolution
+								.hint-wrap
+									.hint Generated image width
+									input(type="text" name="width" placeholder="width")
+								.hint-wrap
+									.hint Generated image height
+									input(type="text" name="height" placeholder="height")
+
+							.hint-wrap
+								.hint Turn green to generate twice as big image<br> for retina displays
+								.is-retina
+									input#is-retina(type="checkbox" name="is-retina")
+									label(for="is-retina") #[i.icon-eye]
+
+						button.btn.btn-generate #[i.icon-steam] Generate SteamWall
+
+					.step.step2.hide.hidden
+						.row
+							p #[strong Notice:] Download may take some minutes
+
+						button.btn.btn-download(type="submit") #[i.icon-download] Download SteamWall
+
+			#loader #[.icon: i.icon-steam] #[p Generating preview...]
+
+			p.legal Steam, the Steam logo are trademarks and/or registered trademarks of Valve Corporation.
+
+		script(src="//code.jquery.com/jquery-2.1.1.js")
+		if !isProduction
+			script(src="js/scripts.js")
+		else
+			script(src="js/scripts.min.js")

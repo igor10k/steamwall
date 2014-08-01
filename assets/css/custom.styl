@@ -1,0 +1,231 @@
+GREEN = #4d6a27
+
+html
+button
+input
+select
+textarea
+	font 12px/1.4 "Helvetica Neue", "Helvetica", "Arial", sans-serif
+
+html
+body
+	height 100%
+
+body
+	cursor default
+	background linear-gradient(#333, #000)
+	overflow hidden
+	color #FFF
+
+h1
+	margin 0 0 20px
+	font-size 27px
+	color #666
+	text-align center
+
+p
+	margin 0
+
+a
+	color GREEN
+
+	&:hover
+		color darken(@color, 20%)
+
+#canvas
+	absolute top 50% left 50%
+	transform translate(-50%, -50%)
+
+.panel
+	absolute top 50% left 50%; z-index 10
+	width 240px
+	border-radius 5px
+	background rgba(#000,0.85)
+	transform translate(-50%, -50%)
+	text-align center
+	color #DDD
+
+	p
+		font-size 11px; line-height 16px
+
+	.signin
+		padding 20px 0
+
+		p
+			margin 0 20px 15px
+
+	form.overflow
+		overflow hidden
+
+	.step
+		height 84px
+		padding 20px
+		transition transform 0.3s
+
+		+ .step
+			margin-top -124px
+
+		&.hidden
+			display none
+
+	.step1.hide
+		transform translate(-100%, 0)
+
+	.step2.hide
+		transform translate(100%, 0)
+
+	.row
+		height 50px
+
+		p
+			strong
+				display block
+
+	.resolution
+		display inline-block
+		vertical-align top
+		border 1px solid GREEN
+		border-radius 2px
+		margin-right 5px
+
+	input[type="text"]
+		size 30px 14px
+		padding 7px 10px
+		background none
+		border none
+		line-height 14px
+		text-align center
+
+	.hint-wrap + .hint-wrap
+		border-left 1px solid GREEN
+
+	.hint-wrap
+		display inline-block
+		vertical-align top
+		position relative
+
+		&:hover .hint
+			display block
+
+	.is-retina
+		position relative
+		overflow hidden
+		border none
+
+		label
+			display block
+			size 30px
+			border-radius 2px
+			background rgba(#FFF, 0.2)
+			cursor pointer
+
+		[class^="icon"]
+			absolute top 7px left 7px
+			font-size 16px
+
+		input
+			float left
+			margin-left -30px
+
+			&:checked + label
+				background GREEN
+
+	.hint
+		display none
+		absolute bottom 100% left 50%
+		margin 0 0 10px; padding 5px
+		border-radius 2px
+		background rgba(GREEN, 0.8)
+		font-size 11px
+		white-space nowrap
+		transform translate(-50%, 0)
+
+		&:before
+			content " "
+			absolute bottom -5px left 50%
+			margin-left -5px
+			border-style solid
+			border-color rgba(GREEN, 0.8) transparent transparent
+			border-width 5px 5px 0 5px
+
+	.buttons
+		position relative
+		padding 20px 0
+		overflow hidden
+
+	.btn
+		box-sizing border-box
+		width 200px
+
+	.btn-generate
+		position relative
+
+	.btn-generate.hide
+		transform translate(-300px, 0)
+
+	.btn-download-wrap
+		margin-top -34px
+
+	.btn-download.hide
+		transform translate(300px, 0)
+
+.btn
+	display inline-block
+	padding 5px 12px
+	border-radius 2px
+	border none
+	background GREEN
+	font-size 14px; line-height 24px
+	text-decoration none
+	color #FFF
+
+	[class^="icon"]
+		display inline-block
+		vertical-align -2px
+		width 20px
+		font-size 16px
+		text-align left
+
+	[class="icon-steam"]
+		vertical-align -1px
+
+	&:hover
+	&:focus
+		background darken(GREEN, 10%)
+		color #FFF
+
+@keyframes spinner
+	100%
+		transform rotate(360deg)
+
+#loader
+	display none
+	absolute top 50% left 50%; z-index 9
+	size 140px 50px
+	margin -155px 0 0 -70px
+	color rgba(#FFF, 0.5)
+	text-align center
+	opacity 0
+	transform scale(0.8)
+	transition all 0.2s
+
+	&.show
+		opacity 1
+		transform scale(1)
+
+	.icon
+		absolute top left 31px
+		size 50px
+		font-size 50px
+		transform-origin 78% 41%
+		animation spinner 1s infinite linear
+
+	p
+		margin-top 70px
+		white-space nowrap
+
+.legal
+	absolute bottom 10px left 50%
+	transform translate(-50%, 0)
+	font-size 11px
+	color rgba(#FFF, 0.5)
