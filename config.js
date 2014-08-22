@@ -6,5 +6,7 @@ module.exports = {
 
 	steam: {
 		apiKey: process.env.STEAM_API_KEY
-	}
+	},
+
+	analytics: process.env.ANALYTICS
 };

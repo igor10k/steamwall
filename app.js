@@ -12,7 +12,8 @@ app.use(session());
 app.use(jade.middleware({
 	viewPath: __dirname + '/views',
 	locals: {
-		isProduction: app.env === 'production'
+		isProduction: app.env === 'production',
+		analytics: config.analytics
 	},
 	pretty: true
 }));
