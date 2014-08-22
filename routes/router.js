@@ -72,8 +72,12 @@ router.post('/download', bodyParser, function* () {
 		return typeof image !== 'undefined';
 	});
 
-	this.set('Content-Disposition', 'attachment; filename=steamwall.png');
-	this.body = yield Steam.makeCollage(images, canvasWidth, canvasHeight);
+	if (!images.length) {
+		this.redirect('/?nogames');
+	} else {
+		this.set('Content-Disposition', 'attachment; filename=steamwall.png');
+		this.body = yield Steam.makeCollage(images, canvasWidth, canvasHeight);
+	}
 });
 
 router.get('/auth', function* () {

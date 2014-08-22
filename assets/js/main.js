@@ -21,7 +21,7 @@ $(function () {
 	var $error = $('#error');
 	var errorTimeout;
 
-	var showError = function (msg) {
+	var showError = function (msg, duration) {
 		$error.text(msg);
 		$error.show();
 		setTimeout(function () {
@@ -31,21 +31,43 @@ $(function () {
 		clearTimeout(errorTimeout);
 		errorTimeout = setTimeout(function () {
 			$error.removeClass('show');
-		}, 2000);
+		}, duration || 2000);
 	};
+
+	if (window.location.search.indexOf('nogames') !== -1) {
+		showError('You should have at least one purchased game to use this app', 4000);
+	}
 
 	var screenWidth = screen.width;
 	var screenHeight = screen.height;
 	var isRetina = window.devicePixelRatio && window.devicePixelRatio > 1 || false;
 
-	var augmentForm = function (selector) {
-		var $form = $(selector);
+	var goToStep = function (stepIndex) {
+		var $form = $('#form');
+		var $steps = $('.step1, .step2', $form);
+		var $oldStep = $steps.eq(1 - stepIndex);
+		var $newStep = $steps.eq(stepIndex);
+
+		$form.addClass('overflow');
+		$oldStep.addClass('hide');
+		$newStep.removeClass('hidden');
+
+		setTimeout(function () {
+			$newStep.removeClass('hide');
+			$newStep.on('webkitTransitionEnd transitionend', function () {
+				$newStep.off('webkitTransitionEnd transitionend');
+				$oldStep.addClass('hidden');
+				$form.removeClass('overflow');
+			});
+		}, 1);
+	};
+
+	var augmentForm = function () {
+		var $form = $('#form');
 		var $width = $('input[name="width"]', $form);
 		var $height = $('input[name="height"]', $form);
 		var $isRetina = $('input[name="is-retina"]', $form);
 		var $btnGenerate = $('.btn-generate', $form);
-		var $step1 = $('.step1', $form);
-		var $step2 = $('.step2', $form);
 
 		$width.val(screenWidth);
 		$height.val(screenHeight);
@@ -70,19 +92,18 @@ $(function () {
 			}
 
 			generateCanvas();
-			$form.addClass('overflow');
-			$step1.addClass('hide');
-			$step2.removeClass('hidden');
-			setTimeout(function () {
-				$step2.removeClass('hide');
-			}, 1);
+			goToStep(1);
 		});
 	};
-	augmentForm('#form');
+	augmentForm();
 
 	var fetchImages = function (imageUrls, done) {
 		var images = [];
 		var counter = 0;
+
+		if (!imageUrls.length) {
+			done(null, images);
+		}
 
 		var finishLoad = function () {
 			counter += 1;
@@ -140,8 +161,13 @@ $(function () {
 			fetchImages(pluckImageUrls(games), function (error, images) {
 				if (error) { return console.error(error); }
 
-				var canvasGrid = new CanvasGrid(canvas);
-				canvasGrid.fitImages(images);
+				if (!images.length) {
+					goToStep(0);
+					showError('You should have at least one purchased game to use this app', 4000);
+				} else {
+					var canvasGrid = new CanvasGrid(canvas);
+					canvasGrid.fitImages(images);
+				}
 
 				hideLoader();
 			});

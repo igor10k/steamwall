@@ -1,6 +1,6 @@
 {
   "name": "steamwall",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Generate a unique wallpaper using games from your Steam library",
   "engines": {
     "node": "0.11.13"

@@ -57,17 +57,19 @@ a
 		p
 			margin 0 20px 15px
 
-	form.overflow
-		overflow hidden
+	form
+		position relative
+		height 124px
+
+		&.overflow
+			overflow hidden
 
 	.step
-		position relative
-		height 84px
+		box-sizing border-box
+		absolute top left
+		size 100%
 		padding 20px
 		transition transform 0.3s
-
-		+ .step
-			margin-top -124px
 
 		&.hidden
 			display none
