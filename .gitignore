@@ -10,3 +10,6 @@ node_modules
 
 # generated public
 public
+
+# start script
+start.sh
