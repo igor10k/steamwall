@@ -73,7 +73,7 @@ router.post('/download', bodyParser, function* () {
 	});
 
 	this.set('Content-Disposition', 'attachment; filename=steamwall.png');
-	this.body = Steam.makeCollage(images, canvasWidth, canvasHeight);
+	this.body = yield Steam.makeCollage(images, canvasWidth, canvasHeight);
 });
 
 router.get('/auth', function* () {

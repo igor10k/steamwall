@@ -1,6 +1,7 @@
 var Steam = require('steam-webapi');
 var Canvas = require('canvas');
 var thunkify = require('thunkify');
+var gm = require('gm');
 var CanvasGrid = require('../assets/js/canvasGrid');
 var config = require('../config');
 
@@ -20,16 +21,12 @@ exports.getOwnedGames = function* (userId) {
 };
 
 exports.makeCollage = function (images, canvasWidth, canvasHeight) {
-	var canvas = new Canvas(canvasWidth, canvasHeight);
+	return function (callback) {
+		var canvas = new Canvas(canvasWidth, canvasHeight);
 
-	images = images.map(function (src) {
-		var image = new Canvas.Image();
-		image.src = src;
-		return image;
-	});
-
-	var canvasGrid = new CanvasGrid(canvas);
-	canvasGrid.fitImages(images);
-
-	return canvas.toBuffer();
+		var canvasGrid = new CanvasGrid(canvas);
+		canvasGrid.fitImages(images, gm, Canvas.Image, function () {
+			callback(null, canvas.toBuffer());
+		});
+	}
 };

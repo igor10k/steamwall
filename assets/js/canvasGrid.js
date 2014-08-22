@@ -2,7 +2,7 @@ function CanvasGrid(canvas) {
 	this.canvas = canvas;
 }
 
-CanvasGrid.prototype.fitImages = function (images) {
+CanvasGrid.prototype.fitImages = function (images, gm, CanvasImage, callback) {
 	var gridRowIndex, gridColIndex;
 	var gridCellWidth, gridCellHeight, gridCellAspect, gridRows, gridCols;
 	var currentX, currentY, currentHeight, currentWidth, currentAspect;
@@ -16,6 +16,8 @@ CanvasGrid.prototype.fitImages = function (images) {
 	var initialImageHeight = 210;
 	var canvasWidth = canvas.width;
 	var canvasHeight = canvas.height;
+
+	var imagesDrawn = 0; // for callback version
 
 	// define grid params so that images fill the available canvas
 	// keeping the images aspect ratio as close a possible to the original
@@ -62,7 +64,28 @@ CanvasGrid.prototype.fitImages = function (images) {
 			cropX = Math.floor((initialImageWidth - cropWidth) / 2);
 			cropY = Math.floor((initialImageHeight - cropHeight) / 2);
 
-			context.drawImage(image, cropX, cropY, cropWidth, cropHeight, currentX, currentY, currentWidth, currentHeight);
+			if (gm) {
+				// graphicsmagick gets passed from node
+				(function (image, currentX, currentY, currentWidth, currentHeight, cropX, cropY, cropWidth, cropHeight) {
+					image = gm(image)
+						.noProfile()
+						.crop(cropX, cropY, cropWidth, cropHeight)
+						.resize(currentWidth, currentHeight, '^')
+						.toBuffer('png', function (error, src) {
+							// CanvasImage is a part of node-canvas
+							image = new CanvasImage();
+							image.src = src;
+							context.drawImage(image, currentX, currentY, currentWidth, currentHeight);
+							imagesDrawn += 1;
+
+							if (imagesDrawn === gridRows * gridCols) {
+								callback();
+							}
+						});
+				}(image, currentX, currentY, currentWidth, currentHeight, cropX, cropY, cropWidth, cropHeight));
+			} else {
+				context.drawImage(image, cropX, cropY, cropWidth, cropHeight, currentX, currentY, currentWidth, currentHeight);
+			}
 
 			currentX += currentWidth;
 		}
