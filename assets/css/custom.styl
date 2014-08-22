@@ -1,5 +1,8 @@
 GREEN = #4d6a27
 
+*
+	-webkit-font-smoothing antialiased
+
 html
 button
 input
@@ -58,6 +61,7 @@ a
 		overflow hidden
 
 	.step
+		position relative
 		height 84px
 		padding 20px
 		transition transform 0.3s
@@ -223,6 +227,18 @@ a
 	p
 		margin-top 70px
 		white-space nowrap
+
+#error
+	display none
+	absolute top 50% left 50%; z-index 8
+	margin-top 70px
+	opacity 0
+	transform translate(-50%, -20px)
+	transition all 0.2s
+
+	&.show
+		opacity 1
+		transform translate(-50%, 0)
 
 .legal
 	absolute bottom 10px left 50%

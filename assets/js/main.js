@@ -18,6 +18,22 @@ $(function () {
 		});
 	};
 
+	var $error = $('#error');
+	var errorTimeout;
+
+	var showError = function (msg) {
+		$error.text(msg);
+		$error.show();
+		setTimeout(function () {
+			$error.addClass('show');
+		}, 1);
+
+		clearTimeout(errorTimeout);
+		errorTimeout = setTimeout(function () {
+			$error.removeClass('show');
+		}, 2000);
+	};
+
 	var screenWidth = screen.width;
 	var screenHeight = screen.height;
 	var isRetina = window.devicePixelRatio && window.devicePixelRatio > 1 || false;
@@ -49,6 +65,10 @@ $(function () {
 
 		$btnGenerate.on('click', function (event) {
 			event.preventDefault();
+			if (screenWidth < 100 || screenHeight < 100) {
+				return showError('Minimum wallpaper size is 100x100');
+			}
+
 			generateCanvas();
 			$form.addClass('overflow');
 			$step1.addClass('hide');
