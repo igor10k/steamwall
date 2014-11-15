@@ -1,1 +1,1 @@
-web: ./node_modules/.bin/gulp production ; node --harmony app.js
+web: node --harmony app.js
