@@ -2,7 +2,7 @@
 
 Generate a unique wallpaper using games from your Steam library.
 
-Available at [steamwall.com](htpp://steamwall.com)
+Available at [steamwall.com](http://steamwall.com)
 
 ##License
 ```

@@ -1,0 +1,25 @@
+.hint-wrap
+	display inline-block
+	vertical-align top
+	position relative
+
+	&:hover .hint
+		display block
+
+.hint
+	display none
+	absolute bottom 100% left 50%
+	margin 0 0 10px; padding 5px
+	border-radius 2px
+	background rgba(GREEN, 0.8)
+	font-size 11px
+	white-space nowrap
+	transform translate(-50%, 0)
+
+	&:before
+		content " "
+		absolute bottom -5px left 50%
+		margin-left -5px
+		border-style solid
+		border-color rgba(GREEN, 0.8) transparent transparent
+		border-width 5px 5px 0 5px

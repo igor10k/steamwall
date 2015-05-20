@@ -7,18 +7,20 @@ var config = require('./config');
 
 app.keys = config.keys.split(',');
 
-app.use(session());
+app.use(session(app));
 
 app.use(jade.middleware({
 	viewPath: __dirname + '/views',
 	locals: {
 		isProduction: app.env === 'production',
-		analytics: config.analytics
+		analytics: config.analytics,
+		domain: config.domain
 	},
 	pretty: true
 }));
 
-app.use(router.middleware());
+app.use(router.routes());
+app.use(router.allowedMethods());
 
 app.use(serve('public'));
 

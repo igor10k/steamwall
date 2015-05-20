@@ -1,0 +1,28 @@
+@keyframes spinner
+	100%
+		transform rotate(360deg)
+
+#loader
+	display none
+	absolute top 50% left 50%; z-index 9
+	size 140px 60px
+	margin -125px 0 0 -70px
+	color rgba(#FFF, 0.5)
+	text-align center
+	opacity 0
+	transform scale(0.8)
+	transition all 0.2s
+
+	&.show
+		opacity 1
+		transform scale(1)
+
+	.icon
+		absolute top left 50%
+		transform-origin 21px 10px
+		margin-left -17px
+		animation spinner 1s infinite linear
+
+	p
+		margin-top 35px
+		white-space nowrap

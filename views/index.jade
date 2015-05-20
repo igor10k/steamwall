@@ -2,60 +2,94 @@ doctype
 html
 	head
 		meta(charset="utf-8")
+
 		title SteamWall
-		meta(name="description" content="SteamWall")
+
+		meta(name="description" content="Generate a unique wallpaper using games from your Steam library.")
+		meta(name="author" content="Igor Kozlov")
+
+		meta(property="og:title" content="SteamWall")
+		meta(property="og:type" content="website")
+		meta(property="og:url" content='http://' + domain + '/')
+		meta(property="og:description" content="Generate a unique wallpaper using games from your Steam library")
+		meta(property="og:image" content='http://' + domain + '/img/logo_og.jpg')
+
 		meta(name="viewport" content="width=device-width")
+
 		if !isProduction
-			link(rel="stylesheet" href="css/styles.css")
+			link(rel="stylesheet" href="/css/styles.css")
 		else
-			link(rel="stylesheet" href="css/styles.min.css")
+			link(rel="stylesheet" href="/css/styles.min.css")
 	body
-		if !userId
-			.panel
-				.signin
-					p SteamWall uses games from your Steam library to generate a unique wallpaper
-					a.btn(href="/auth") #[i.icon-steam] Sign in through Steam
+		if !steamId
+			.panel.panel-signin
+				p SteamWall uses games from your Steam library to generate a unique wallpaper
+				a.btn.btn-signin(href="/auth") #[i.icon-steam] Sign in through Steam
+				.or or
+				p
+					| Provide your
+					= ' '
+					span.hint-wrap
+						span.hint STEAM_0:X:XXXXXX
+						| Steam ID
+					= ', '
+					span.hint-wrap
+						span.hint http://steamcommunity.com/profiles/[STEAM64_ID]
+						| Steam64 ID
+					= ', '
+					span.hint-wrap
+						span.hint http://steamcommunity.com/id/[CUSTOM_URL]
+						| Custom URL
+					= ' or '
+					span.hint-wrap
+						span.hint http://steamcommunity.com/id/XXX or<br> http://steamcommunity.com/profiles/XXX
+						| Full Profile URL
+
+				form.form-steamid(action="/auth/steamid" method="post")
+					button.btn(type="submit") OK
+					.input-text-wrap
+						input.input-text(type="text" name="id_or_url")
 		else
 			canvas#canvas
-			.panel
-				form#form(action="/download" method="post")
-					.step.step1
-						.row
-							.resolution
-								.hint-wrap
-									.hint Generated image width
-									input(type="text" name="width" placeholder="width")
-								.hint-wrap
-									.hint Generated image height
-									input(type="text" name="height" placeholder="height")
 
+			.panel.panel-generate
+				form#generate-form.generate-form(action="/download" method="post")
+					.generate-row
+						.generate-resolution
 							.hint-wrap
-								.hint Turn green to generate twice as big image<br> for retina displays
-								.is-retina
-									input#is-retina(type="checkbox" name="is-retina")
-									label(for="is-retina") #[i.icon-eye]
+								.hint Generated image width
+								input.input-text(type="text" name="width" placeholder="width")
+							.hint-wrap
+								.hint Generated image height
+								input.input-text(type="text" name="height" placeholder="height")
 
-						button.btn.btn-generate #[i.icon-steam] Generate SteamWall
+						.hint-wrap
+							.hint Turn green to generate twice as big image<br> for retina displays
+							.generate-is-retina
+								input#is-retina(type="checkbox" name="is-retina")
+								label(for="is-retina") #[i.icon-eye]
 
-					.step.step2.hide.hidden
-						.row
-							p #[strong Notice:] Download may take some minutes
+					.generate-buttons
+						button.btn.btn-preview Preview
+						button.btn.btn-download(type="submit") Download
 
-						button.btn.btn-download(type="submit") #[i.icon-download] Download SteamWall
-
-			#loader #[.icon: i.icon-steam] #[p Generating preview...]
+			#loader #[.icon: i.icon-steam] #[p Generating preview]
 
 			#error
 
-		p.legal Steam, the Steam logo are trademarks and/or registered trademarks of Valve Corporation.
+			a.signout.btn-corner(href="/signout") #[i.icon-signout]
 
-		a.github(href="https://github.com/Igor10k/steamwall"): i.icon-github
+		.bottom-text
+			p.contact Questions? Suggestions? Or just want to say thanks? Contact me at #[a(href="mailto: me@igorkozlov.me") me@igorkozlov.me].
+			p.legal Steam, the Steam logo are trademarks and/or registered trademarks of Valve Corporation.
 
-		script(src="//code.jquery.com/jquery-2.1.1.js")
+		a.github.btn-corner(href="https://github.com/Igor10k/steamwall"): i.icon-github
+
+		script(src="//code.jquery.com/jquery-2.1.4.js")
 		if !isProduction
-			script(src="js/scripts.js")
+			script(src="/js/scripts.js")
 		else
-			script(src="js/scripts.min.js")
+			script(src="/js/scripts.min.js")
 
 			script.
 				(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){

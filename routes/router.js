@@ -1,4 +1,4 @@
-var Router = require('koa-router');
+var router = require('koa-router')();
 var openid = require('openid');
 var config = require('../config');
 var thunkify = require('thunkify');
@@ -6,28 +6,26 @@ var Steam = require('../models/Steam');
 var http = require('http');
 var bodyParser = require('koa-body')();
 
-var router = new Router();
-
 var realm = 'http://' + config.domain + (process.env.NODE_ENV !== 'production' ? ':' + config.port : '') + '/';
 var returnUrl = realm + 'auth/verify';
 var relyingParty = new openid.RelyingParty(returnUrl, realm, true, false, []);
 
 router.get('/', function* () {
-	yield this.render('index', {
-		userId: this.session.userId
+	this.render('index', {
+		steamId: this.session.steamId
 	});
 });
 
 router.get('/getownedgames', function* () {
-	if (!this.session.userId) {
+	if (!this.session.steamId) {
 		this.body = { error: 'User is not signed in.' };
 	} else {
-		this.body = yield Steam.getOwnedGames(this.session.userId);
+		this.body = yield Steam.getOwnedGames(this.session.steamId);
 	}
 });
 
 router.post('/download', bodyParser, function* () {
-	if (!this.session.userId) {
+	if (!this.session.steamId) {
 		this.body = { error: 'User is not signed in.' };
 		return;
 	}
@@ -66,7 +64,7 @@ router.post('/download', bodyParser, function* () {
 		return this.redirect('/');
 	}
 
-	var data = yield Steam.getOwnedGames(this.session.userId);
+	var data = yield Steam.getOwnedGames(this.session.steamId);
 	var images = yield fetchImages(data.games);
 	images = images.filter(function (image) {
 		return typeof image !== 'undefined';
@@ -86,17 +84,50 @@ router.get('/auth', function* () {
 	this.redirect(authUrl);
 });
 
+router.post('/auth/steamid', bodyParser, function* () {
+	var vanityurl, idOrUrl;
+
+	if (!this.request.body.id_or_url) {
+		this.redirect('/');
+	}
+
+	idOrUrl = this.request.body.id_or_url;
+
+	// STEAM_0:X:XXXXXX
+	this.session.steamId = Steam.steamIdTo64(idOrUrl);
+
+	// /profiles/[STEAM64_ID]
+	if (!this.session.steamId) {
+		this.session.steamId = Steam.extractSteam64Id(idOrUrl);
+	}
+
+	// /id/[CUSTOM_URL]
+	if (!this.session.steamId) {
+		vanityurl = Steam.extractVanityUrl(idOrUrl);
+
+		if (vanityurl) {
+			this.session.steamId = yield Steam.resolveVanityURL(encodeURIComponent(vanityurl));
+		}
+	}
+
+	if (!this.session.steamId) {
+		this.redirect('/?nomatch');
+	}
+
+	this.redirect('/');
+});
+
 router.get('/auth/verify', function* () {
 	var verify = thunkify(relyingParty.verifyAssertion);
 	var result = yield verify.call(relyingParty, this.req);
 	if (result.authenticated) {
-		this.session.userId = result.claimedIdentifier.slice(result.claimedIdentifier.lastIndexOf('/') + 1);
+		this.session.steamId = result.claimedIdentifier.slice(result.claimedIdentifier.lastIndexOf('/') + 1);
 	}
 	this.redirect('/');
 });
 
-router.get('/auth/signout', function* () {
-	delete this.session.userId;
+router.get('/signout', function* () {
+	delete this.session.steamId;
 	this.redirect('/');
 });
 

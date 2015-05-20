@@ -1,0 +1,87 @@
+.generate-form
+	height 90px
+
+.generate-step
+	box-sizing border-box
+	absolute top left
+	size 100%
+	padding 20px
+	transition transform 0.3s
+
+	&.hidden
+		display none
+
+.generate-step1.hide
+	transform translate(-100%, 0)
+
+.generate-step2.hide
+	transform translate(100%, 0)
+
+.generate-row
+	height 40px
+	margin-bottom 10px
+
+.generate-resolution
+	display inline-block
+	vertical-align top
+	margin-right 10px
+
+	.hint-wrap
+		width 85px
+
+		&:first-child
+			.input-text
+				border-right none
+				border-radius 2px 0 0 2px
+
+			+ .hint-wrap
+				width 84px
+				border-left 1px solid GREEN
+
+				.input-text
+					border-left none
+					border-radius 0 2px 2px 0
+
+
+.generate-is-retina
+	position relative
+	overflow hidden
+	border none
+
+	label
+		display block
+		padding 10px
+		border-radius 2px
+		background rgba(#FFF, 0.2)
+		cursor pointer
+		line-height 40px
+
+	input
+		float left
+		margin-left -30px
+
+		&:checked + label
+			background GREEN
+
+.generate-buttons
+	position relative
+	height 40px
+
+	.btn
+		position absolute
+		bottom 0
+		width 105px
+		transition 0.3s all
+
+	.btn-preview
+		left 0
+
+		&.hide
+			opacity 0
+			transform translate(-95px, 0)
+
+	.btn-download
+		right 0
+
+		&.full-size
+			width 220px

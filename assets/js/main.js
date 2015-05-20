@@ -42,32 +42,13 @@ $(function () {
 	var screenHeight = screen.height;
 	var isRetina = window.devicePixelRatio && window.devicePixelRatio > 1 || false;
 
-	var goToStep = function (stepIndex) {
-		var $form = $('#form');
-		var $steps = $('.step1, .step2', $form);
-		var $oldStep = $steps.eq(1 - stepIndex);
-		var $newStep = $steps.eq(stepIndex);
-
-		$form.addClass('overflow');
-		$oldStep.addClass('hide');
-		$newStep.removeClass('hidden');
-
-		setTimeout(function () {
-			$newStep.removeClass('hide');
-			$newStep.on('webkitTransitionEnd transitionend', function () {
-				$newStep.off('webkitTransitionEnd transitionend');
-				$oldStep.addClass('hidden');
-				$form.removeClass('overflow');
-			});
-		}, 1);
-	};
-
 	var augmentForm = function () {
-		var $form = $('#form');
+		var $form = $('#generate-form');
 		var $width = $('input[name="width"]', $form);
 		var $height = $('input[name="height"]', $form);
 		var $isRetina = $('input[name="is-retina"]', $form);
-		var $btnGenerate = $('.btn-generate', $form);
+		var $btnPreview = $('.btn-preview', $form);
+		var $btnDownload = $('.btn-download', $form);
 
 		$width.val(screenWidth);
 		$height.val(screenHeight);
@@ -85,14 +66,16 @@ $(function () {
 			isRetina = this.checked;
 		});
 
-		$btnGenerate.on('click', function (event) {
+		$btnPreview.on('click', function (event) {
 			event.preventDefault();
 			if (screenWidth < 100 || screenHeight < 100) {
 				return showError('Minimum wallpaper size is 100x100');
 			}
 
+			$btnPreview.addClass('hide');
+			$btnDownload.addClass('full-size');
+
 			generateCanvas();
-			goToStep(1);
 		});
 	};
 	augmentForm();
@@ -162,12 +145,13 @@ $(function () {
 				if (error) { return console.error(error); }
 
 				if (!images.length) {
-					goToStep(0);
 					showError('You should have at least one purchased game to use this app', 4000);
 				} else {
 					var canvasGrid = new CanvasGrid(canvas);
 					canvasGrid.fitImages(images);
 				}
+
+				$('body').addClass('has-image');
 
 				hideLoader();
 			});
