@@ -75,9 +75,10 @@ html
 
 			#loader #[.icon: i.icon-steam] #[p Generating preview]
 
-			#error
-
 			a.signout.btn-corner(href="/signout") #[i.icon-signout]
+
+		if error
+			#error.show= error
 
 		.bottom-text
 			p.contact Questions? Suggestions? Or just want to say thanks? Contact me at #[a(href="mailto: me@igorkozlov.me") me@igorkozlov.me].

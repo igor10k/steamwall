@@ -1,6 +1,6 @@
 var Canvas = require('canvas');
 var gm = require('gm');
-var CanvasGrid = require('../assets/js/canvasGrid');
+var CanvasGrid = require('../assets/js/canvas-grid');
 var config = require('../config');
 var request = require('koa-request');
 var BigNumber = require('bignumber.js');

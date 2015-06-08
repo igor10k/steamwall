@@ -12,13 +12,15 @@ var relyingParty = new openid.RelyingParty(returnUrl, realm, true, false, []);
 
 router.get('/', function* () {
 	this.render('index', {
-		steamId: this.session.steamId
+		steamId: this.session.steamId,
+		error: this.flash.error
 	});
 });
 
 router.get('/getownedgames', function* () {
 	if (!this.session.steamId) {
-		this.body = { error: 'User is not signed in.' };
+		this.flash = { error: 'You are not signed in' };
+		return this.redirect('/');
 	} else {
 		this.body = yield Steam.getOwnedGames(this.session.steamId);
 	}
@@ -26,8 +28,8 @@ router.get('/getownedgames', function* () {
 
 router.post('/download', bodyParser, function* () {
 	if (!this.session.steamId) {
-		this.body = { error: 'User is not signed in.' };
-		return;
+		this.flash = { error: 'You are not signed in' };
+		return this.redirect('/');
 	}
 
 	var requestImage = function (url) {
@@ -71,7 +73,8 @@ router.post('/download', bodyParser, function* () {
 	});
 
 	if (!images.length) {
-		this.redirect('/?nogames');
+		this.flash = { error: 'You should have at least one purchased game to use this app' };
+		this.redirect('/');
 	} else {
 		this.set('Content-Disposition', 'attachment; filename=steamwall.png');
 		this.body = yield Steam.makeCollage(images, canvasWidth, canvasHeight);
@@ -88,7 +91,8 @@ router.post('/auth/steamid', bodyParser, function* () {
 	var vanityurl, idOrUrl;
 
 	if (!this.request.body.id_or_url) {
-		this.redirect('/');
+		this.flash = { error: 'You provided an empty string.' };
+		return this.redirect('/');
 	}
 
 	idOrUrl = this.request.body.id_or_url;
@@ -111,7 +115,8 @@ router.post('/auth/steamid', bodyParser, function* () {
 	}
 
 	if (!this.session.steamId) {
-		this.redirect('/?nomatch');
+		console.log(this.session.steamId);
+		this.flash = { error: 'Looks like something is wrong with the string you provided.' };
 	}
 
 	this.redirect('/');

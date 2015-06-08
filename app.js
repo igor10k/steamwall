@@ -2,12 +2,14 @@ var app = require('koa')();
 var session = require('koa-session');
 var jade = require('koa-jade');
 var serve = require('koa-static');
+var flash = require('koa-flash');
 var router = require('./routes/router');
 var config = require('./config');
 
 app.keys = config.keys.split(',');
 
 app.use(session(app));
+app.use(flash());
 
 app.use(jade.middleware({
 	viewPath: __dirname + '/views',
@@ -15,8 +17,7 @@ app.use(jade.middleware({
 		isProduction: app.env === 'production',
 		analytics: config.analytics,
 		domain: config.domain
-	},
-	pretty: true
+	}
 }));
 
 app.use(router.routes());
